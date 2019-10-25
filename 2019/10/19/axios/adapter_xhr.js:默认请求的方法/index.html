@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="axios源码,源码," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="/lib/adapter/xhr.jsxhr.js 暴露的xhrAdapter方法，是axios在浏览器环境下的默认请求方法，可以在配置中使用adapter配置项对默认的方法进行替换。 12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758">
+<meta name="keywords" content="axios源码,源码">
+<meta property="og:type" content="article">
+<meta property="og:title" content="adapter_xhr.js 默认的请求方法">
+<meta property="og:url" content="http://yoursite.com/2019/10/19/axios/adapter_xhr.js:默认请求的方法/index.html">
+<meta property="og:site_name" content="Wang Anyu&#39;s blog">
+<meta property="og:description" content="/lib/adapter/xhr.jsxhr.js 暴露的xhrAdapter方法，是axios在浏览器环境下的默认请求方法，可以在配置中使用adapter配置项对默认的方法进行替换。 12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-10-25T07:57:59.401Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="adapter_xhr.js 默认的请求方法">
+<meta name="twitter:description" content="/lib/adapter/xhr.jsxhr.js 暴露的xhrAdapter方法，是axios在浏览器环境下的默认请求方法，可以在配置中使用adapter配置项对默认的方法进行替换。 12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/10/19/axios/adapter_xhr.js:默认请求的方法/"/>
+
+
+
+
+
+  <title>adapter_xhr.js 默认的请求方法 | Wang Anyu's blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Wang Anyu's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/19/axios/adapter_xhr.js:默认请求的方法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Wang Anyu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wang Anyu's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">adapter_xhr.js 默认的请求方法</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-19T00:00:00+08:00">
+                2019-10-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="lib-adapter-xhr-js"><a href="#lib-adapter-xhr-js" class="headerlink" title="/lib/adapter/xhr.js"></a>/lib/adapter/xhr.js</h3><p>xhr.js 暴露的xhrAdapter方法，是axios在浏览器环境下的默认请求方法，可以在配置中使用adapter配置项对默认的方法进行替换。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="keyword">function</span> <span class="title">xhrAdapter</span>(<span class="params">config</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span> <span class="title">dispatchXhrRequest</span>(<span class="params">resolve, reject</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> requestData = config.data;</span><br><span class="line">    <span class="keyword">var</span> requestHeaders = config.headers;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 判断是不是formData对象，如果是，删除header的Content-Type值，由浏览器自己决定</span></span><br><span class="line">    <span class="keyword">if</span> (utils.isFormData(requestData)) &#123;</span><br><span class="line">      <span class="keyword">delete</span> requestHeaders[<span class="string">'Content-Type'</span>]; <span class="comment">// Let the browser set it</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建xml对象以及监听事件的名</span></span><br><span class="line">    <span class="keyword">var</span> request = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">    <span class="keyword">var</span> loadEvent = <span class="string">'onreadystatechange'</span>;</span><br><span class="line">    <span class="keyword">var</span> xDomain = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// For IE 8/9 CORS support 针对ie8/9的cors支持</span></span><br><span class="line">    <span class="comment">// 只支持post和get的调用，并且不会返回相应的头</span></span><br><span class="line">    <span class="comment">// 对于test环境，或者没有XDomainRequest</span></span><br><span class="line">    <span class="comment">// 对以上情况进行特殊处理</span></span><br><span class="line">    <span class="comment">// Only supports POST and GET calls and doesn't returns the response headers.</span></span><br><span class="line">    <span class="comment">// DON'T do this for testing b/c XMLHttpRequest is mocked, not XDomainRequest.</span></span><br><span class="line">    <span class="keyword">if</span> (process.env.NODE_ENV !== <span class="string">'test'</span> &amp;&amp;</span><br><span class="line">        <span class="keyword">typeof</span> <span class="built_in">window</span> !== <span class="string">'undefined'</span> &amp;&amp;</span><br><span class="line">        <span class="built_in">window</span>.XDomainRequest &amp;&amp; !(<span class="string">'withCredentials'</span> <span class="keyword">in</span> request) &amp;&amp;</span><br><span class="line">        !isURLSameOrigin(config.url)) &#123;</span><br><span class="line">      request = <span class="keyword">new</span> <span class="built_in">window</span>.XDomainRequest();</span><br><span class="line">      loadEvent = <span class="string">'onload'</span>;</span><br><span class="line">      xDomain = <span class="literal">true</span>;</span><br><span class="line">      request.onprogress = <span class="function"><span class="keyword">function</span> <span class="title">handleProgress</span>(<span class="params"></span>) </span>&#123;&#125;;</span><br><span class="line">      request.ontimeout = <span class="function"><span class="keyword">function</span> <span class="title">handleTimeout</span>(<span class="params"></span>) </span>&#123;&#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设置http请求头中的Authorization字段</span></span><br><span class="line">    <span class="comment">// HTTP basic authentication</span></span><br><span class="line">    <span class="keyword">if</span> (config.auth) &#123;</span><br><span class="line">      <span class="keyword">var</span> username = config.auth.username || <span class="string">''</span>;</span><br><span class="line">      <span class="keyword">var</span> password = config.auth.password || <span class="string">''</span>;</span><br><span class="line">      requestHeaders.Authorization = <span class="string">'Basic '</span> + btoa(username + <span class="string">':'</span> + password);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 初始化请求方法</span></span><br><span class="line">    <span class="comment">// open(method, url, 是否支持异步)</span></span><br><span class="line">    request.open(config.method.toUpperCase(), </span><br><span class="line">      buildURL(config.url, config.params, config.paramsSerializer), <span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 设置超时时间</span></span><br><span class="line">    request.timeout = config.timeout;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Listen for ready state</span></span><br><span class="line">    <span class="comment">// 监听3readyState状态的变化，状态为4时才继续下一步</span></span><br><span class="line">    request[loadEvent] = <span class="function"><span class="keyword">function</span> <span class="title">handleLoad</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (!request || (request.readyState !== <span class="number">4</span> &amp;&amp; !xDomain)) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 当这个请求出错，并且没有返回值时(request.status为0)，会触发onerror事件</span></span><br><span class="line">      <span class="comment">// 有一个情况除外，当请求使用了文件的协议时，即使发送成功，这个status也会为0</span></span><br><span class="line">      <span class="keyword">if</span> (request.status === <span class="number">0</span> &amp;&amp; !(request.responseURL &amp;&amp; request.responseURL.indexOf(<span class="string">'file:'</span>) === <span class="number">0</span>)) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 转化响应头部</span></span><br><span class="line">      <span class="keyword">var</span> responseHeaders = <span class="string">'getAllResponseHeaders'</span> <span class="keyword">in</span> request ? </span><br><span class="line">        parseHeaders(request.getAllResponseHeaders()) : <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 如果没有配置响应类型，或者响应类型为text，那么返回request.responseText， 否则返回request.response</span></span><br><span class="line">      <span class="comment">// responseType是一个枚举类型，手动设置返回数据的类型</span></span><br><span class="line">      <span class="comment">// responseText是全部后端的返回数据为纯文本的值</span></span><br><span class="line">      <span class="comment">// response为正文，response的类型取决于responseType</span></span><br><span class="line">      <span class="keyword">var</span> responseData = !config.responseType || config.responseType === <span class="string">'text'</span> ? </span><br><span class="line">        request.responseText : request.response;</span><br><span class="line">      <span class="keyword">var</span> response = &#123;</span><br><span class="line">        data: responseData,</span><br><span class="line">        <span class="comment">// IE sends 1223 instead of 204 (https://github.com/mzabriskie/axios/issues/201)</span></span><br><span class="line">        status: request.status === <span class="number">1223</span> ? <span class="number">204</span> : request.status,</span><br><span class="line">        statusText: request.status === <span class="number">1223</span> ? <span class="string">'No Content'</span> : request.statusText,</span><br><span class="line">        headers: responseHeaders,</span><br><span class="line">        config: config,</span><br><span class="line">        request: request</span><br><span class="line">      &#125;;</span><br><span class="line"></span><br><span class="line">      settle(resolve, reject, response);</span><br><span class="line">      <span class="comment">// 校验请求结果</span></span><br><span class="line">      <span class="comment">// if (!response.status || !validateStatus || validateStatus(response.status)) &#123;</span></span><br><span class="line">      <span class="comment">//   resolve(response);</span></span><br><span class="line">      <span class="comment">// &#125; else &#123;</span></span><br><span class="line">      <span class="comment">//   reject(createError(</span></span><br><span class="line">      <span class="comment">//     'Request failed with status code ' + response.status,</span></span><br><span class="line">      <span class="comment">//     response.config,</span></span><br><span class="line">      <span class="comment">//     null,</span></span><br><span class="line">      <span class="comment">//     response</span></span><br><span class="line">      <span class="comment">//   ));</span></span><br><span class="line">      <span class="comment">// &#125;</span></span><br><span class="line"></span><br><span class="line">      <span class="comment">// Clean up request</span></span><br><span class="line">      request = <span class="literal">null</span>;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ajax失败时触发</span></span><br><span class="line">    request.onerror = <span class="function"><span class="keyword">function</span> <span class="title">handleError</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">      reject(createError(<span class="string">'Network Error'</span>, config));</span><br><span class="line">      <span class="comment">// 抛出network error的错误</span></span><br><span class="line"></span><br><span class="line">      <span class="comment">// Clean up request</span></span><br><span class="line">      request = <span class="literal">null</span>;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 请求超时的时候触发</span></span><br><span class="line">    request.ontimeout = <span class="function"><span class="keyword">function</span> <span class="title">handleTimeout</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">      reject(createError(<span class="string">'timeout of '</span> + config.timeout + <span class="string">'ms exceeded'</span>, config, <span class="string">'ECONNABORTED'</span>));</span><br><span class="line"></span><br><span class="line">      <span class="comment">// Clean up request</span></span><br><span class="line">      request = <span class="literal">null</span>;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 添加xsrf头部，只有在标准浏览器环境下才会执行</span></span><br><span class="line">    <span class="comment">// 尤其是web worker或者RN的环境下不会执行</span></span><br><span class="line">    <span class="comment">// xsrf header用来防御xsrf攻击，原理是服务端生成一个xsrf-token，浏览器在每次访问的时候都带上这个属性作为header，</span></span><br><span class="line">    <span class="comment">// 服务器会比较cookie中的这个值和header的这个值是否一致</span></span><br><span class="line">    <span class="comment">// 根据通源策略，非本源的网站无法读取修改本源的网站cookie，避免cookie被伪造</span></span><br><span class="line">    <span class="keyword">if</span> (utils.isStandardBrowserEnv()) &#123;</span><br><span class="line">      <span class="keyword">var</span> cookies = <span class="built_in">require</span>(<span class="string">'./../helpers/cookies'</span>);</span><br><span class="line"></span><br><span class="line">      <span class="comment">// Add xsrf header</span></span><br><span class="line">      <span class="keyword">var</span> xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) &amp;&amp; config.xsrfCookieName ?</span><br><span class="line">          cookies.read(config.xsrfCookieName) :</span><br><span class="line">          <span class="literal">undefined</span>;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (xsrfValue) &#123;</span><br><span class="line">        requestHeaders[config.xsrfHeaderName] = xsrfValue;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Add headers to the request</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="string">'setRequestHeader'</span> <span class="keyword">in</span> request) &#123;</span><br><span class="line">      utils.forEach(requestHeaders, <span class="function"><span class="keyword">function</span> <span class="title">setRequestHeader</span>(<span class="params">val, key</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">typeof</span> requestData === <span class="string">'undefined'</span> &amp;&amp; key.toLowerCase() === <span class="string">'content-type'</span>) &#123;</span><br><span class="line">          <span class="comment">// Remove Content-Type if data is undefined</span></span><br><span class="line">          <span class="keyword">delete</span> requestHeaders[key];</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          <span class="comment">// Otherwise add header to the request</span></span><br><span class="line">          request.setRequestHeader(key, val);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 不同域下的XmlHttpRequest请求，无论Access-Cntrol-header设置成什么值，都无法改变自身站点下的cookie，</span></span><br><span class="line">    <span class="comment">// 除非将withCreden设置为true</span></span><br><span class="line">    <span class="keyword">if</span> (config.withCredentials) &#123;</span><br><span class="line">      request.withCredentials = <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Add responseType to request if needed</span></span><br><span class="line">    <span class="keyword">if</span> (config.responseType) &#123;</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">        request.responseType = config.responseType;</span><br><span class="line">      &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">        <span class="keyword">if</span> (request.responseType !== <span class="string">'json'</span>) &#123;</span><br><span class="line">          <span class="keyword">throw</span> e;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 下载进度</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> config.onDownloadProgress === <span class="string">'function'</span>) &#123;</span><br><span class="line">      request.addEventListener(<span class="string">'progress'</span>, config.onDownloadProgress);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 上传进度   request.upload返回一个XMLHttpRequestUpload对象，用来表示上传进度</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> config.onUploadProgress === <span class="string">'function'</span> &amp;&amp; request.upload) &#123;</span><br><span class="line">      request.upload.addEventListener(<span class="string">'progress'</span>, config.onUploadProgress);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (config.cancelToken) &#123;</span><br><span class="line">      <span class="comment">// 取消请求</span></span><br><span class="line">      config.cancelToken.promise.then(<span class="function"><span class="keyword">function</span> <span class="title">onCanceled</span>(<span class="params">cancel</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!request) &#123;</span><br><span class="line">          <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        request.abort();</span><br><span class="line">        reject(cancel);</span><br><span class="line">        <span class="comment">// Clean up request</span></span><br><span class="line">        request = <span class="literal">null</span>;</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (requestData === <span class="literal">undefined</span>) &#123;</span><br><span class="line">      requestData = <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Send the request</span></span><br><span class="line">    request.send(requestData);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/axios源码/" rel="tag"># axios源码</a>
+          
+            <a href="/tags/源码/" rel="tag"># 源码</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/10/18/axios/cancelToken/" rel="next" title="axios的请求取消操作  /lib/cancel/cancelToken.js">
+                <i class="fa fa-chevron-left"></i> axios的请求取消操作  /lib/cancel/cancelToken.js
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/10/20/axios/axios实例内部的方法封装/" rel="prev" title="/lib/core/axios.js  axios实例上的各个方法">
+                /lib/core/axios.js  axios实例上的各个方法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/img/avatar.gif"
+                alt="Wang Anyu" />
+            
+              <p class="site-author-name" itemprop="name">Wang Anyu</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#lib-adapter-xhr-js"><span class="nav-number">1.</span> <span class="nav-text">/lib/adapter/xhr.js</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Wang Anyu</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
